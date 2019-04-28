@@ -24,6 +24,7 @@ class Figure(ABC):
         return str((self._x, self._y)) + ", " + self._color
 
 
+# class for the farmer figure
 class Farmer(Figure):
     def __init__(self, x, y, color):
         super().__init__(x, y, color)
