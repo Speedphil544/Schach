@@ -23,6 +23,8 @@ class Figure(ABC):
     def __repr__(self):
         return str((self._x, self._y)) + ", " + self._color
 
+# I'm going to add a king class here
+
 
 class Farmer(Figure):
     def __init__(self, x, y, color):
