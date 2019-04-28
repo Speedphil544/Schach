@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c1feda7b-f530-4bd6-bb28-818087d2ecaa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Figures.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Figures.py" afterDir="false" />
-    </list>
+    <list default="true" id="c1feda7b-f530-4bd6-bb28-818087d2ecaa" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,17 +31,18 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="py" value="1576" />
-          <entry key="txt" value="46" />
+          <entry key="txt" value="95" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="46" />
+          <entry key="PLAIN_TEXT" value="95" />
           <entry key="Python" value="1576" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
         <counts>
+          <entry key="git.branch.checkout.local" value="1" />
           <entry key="git.branch.create.new" value="1" />
         </counts>
       </usages-collector>
@@ -228,7 +226,14 @@
       <option name="project" value="LOCAL" />
       <updated>1556439504896</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Changed __init__() method and added some comments">
+      <created>1556456870383</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1556456870383</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -259,7 +264,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="ADded a comment for the farmer class" />
-    <option name="LAST_COMMIT_MESSAGE" value="ADded a comment for the farmer class" />
+    <MESSAGE value="Changed __init__() method and added some comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed __init__() method and added some comments" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/Schach.py">
