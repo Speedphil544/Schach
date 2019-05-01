@@ -15,6 +15,7 @@ class Figure(ABC):
         chessboard[(self._x, self._y)] = EmptyFigure
         self._x = x
         self._y = y
+        # alte != neue Position
         chessboard[(x, y)] = self
 
     def getCoordinates(self):
