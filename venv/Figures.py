@@ -127,13 +127,31 @@ class Knight(Figure):
         if (x, y) in chessboard:
             if chessboard[(x, y)].getColor() == self._color:
                 raise NotImplementedError
-        if (abs(self._x - x) == 2 and abs(self._y - y) == 1 ) or  (abs(self._y - y) == 2 and abs(self._x - x) == 1 ):
+        if (abs(self._x - x) == 2 and abs(self._y - y) == 1) or (abs(self._y - y) == 2 and abs(self._x - x) == 1):
             super().move(x, y, chessboard)
             return
         raise NotImplementedError
 
 
+class Bishop(Figure):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    # evaluates if a move is possible and then calls the super function to do the move
+    def move(self, x, y, chessboard):
+        if (x, y) in chessboard:
+            if chessboard[(x, y)].getColor() == self._color:
+                raise NotImplementedError
+        if abs(self._x - x) == abs(self._y - y):
+            if not list(filter(lambda it: it in chessboard,
+                               zip(range(self._x + np.sign(x - self._x), x, np.sign(x - self._x)),
+                                   range(self._y + np.sign(y - self._y), y, np.sign(y - self._y))))):
+                super().move(x, y, chessboard)
+                return
+        raise NotImplementedError
+
+
 chessboard = {}
-chessboard[(2, 6)] = Farmer(2, 6, "black")
-chessboard[(2, 7)] = Knight(2, 7, "white")
-chessboard[(2, 7)].move(3, 5, chessboard)
+chessboard[(3, 6)] = Farmer(3, 6, "black")
+chessboard[(2, 7)] = Bishop(2, 7, "white")
+chessboard[(2, 7)].move(5, 4, chessboard)
