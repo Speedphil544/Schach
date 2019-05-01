@@ -1,5 +1,10 @@
 from abc import ABC, abstractmethod
+import numpy as np
+'''
+In this module, we have all the figures
 
+
+'''
 
 # represents a figure on the board
 class Figure(ABC):
@@ -13,7 +18,7 @@ class Figure(ABC):
 
     # this method is called by the overwritten method in the inheriting class
     def move(self, x, y, chessboard):
-        chessboard[(self._x, self._y)] = EmptyFigure
+        chessboard.pop(self._x, self._y)
         self._x = x
         self._y = y
         # alte != neue Position
@@ -43,7 +48,7 @@ class King(Figure):
         return "king, " + super().__repr__()
 
 
-# class for the farmer figure
+
 class Farmer(Figure):
     def __init__(self, x, y, color):
         super().__init__(x, y, color)
@@ -90,9 +95,29 @@ class Farmer(Figure):
         return "farmer, " + super().__repr__()
 
 
+class Tower(Figure):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    # evaluates if a move is possible and then calls the super function to do the move
+    def move(self, x, y, chessboard):
+        if (x, y) in chessboard:
+            if chessboard[(x, y)].getColor() == self._color:
+                raise NotImplementedError
+        if self._y == y:
+            if not list(filter(lambda xIt: (xIt, y) in chessboard,
+                               range(self._x + np.sign(x - self._x), x, np.sign(x - self._x)))):
+                super().mover(x, y, chessboard)
+                return
+        if self._x == x:
+            if not list(filter(lambda yIt: (x, yIt) in chessboard,
+                               range(self._y + np.sign(y - self._y), y, np.sign(y - self._y)))):
+                super().move(x, y, chessboard)
+                return
+        raise NotImplementedError
+
+
 chessboard = {}
 chessboard[(2, 6)] = Farmer(2, 6, "black")
-chessboard[(1, 7)] = Farmer(1, 7, "white")
-chessboard[(1, 6)] = EmptyFigure()
-chessboard[(1, 5)] = EmptyFigure()
-chessboard[(1, 7)].move(3, 6, chessboard)
+chessboard[(2, 7)] = Tower(2, 7, "white")
+chessboard[(2, 7)].move(2, 5, chessboard)
