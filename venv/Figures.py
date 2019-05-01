@@ -16,6 +16,7 @@ class Figure(ABC):
         chessboard[(self._x, self._y)] = EmptyFigure
         self._x = x
         self._y = y
+        # alte != neue Position
         chessboard[(x, y)] = self
 
     def getCoordinates(self):
@@ -24,7 +25,18 @@ class Figure(ABC):
     def __repr__(self):
         return str((self._x, self._y)) + ", " + self._color
 
-# I'm going to add a king class here
+class King(Figure):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    # can do the following moves
+    def move(self, x, y, chessboard):
+        # king can't move more than one step in x or y direction
+        if abs(self._x - x) <= 1 and abs(self._y - y) <= 1: # both differences 1 -> diagonal step
+            super().move(x, y, chessboard)
+
+    def __repr__(self):
+        return "king, " + super().__repr__()
 
 
 # class for the farmer figure
