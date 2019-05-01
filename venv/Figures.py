@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 import numpy as np
+
 '''
 In this module, we have all the figures
 
 
 '''
+
 
 # represents a figure on the board
 class Figure(ABC):
@@ -46,7 +48,6 @@ class King(Figure):
 
     def __repr__(self):
         return "king, " + super().__repr__()
-
 
 
 class Farmer(Figure):
@@ -117,7 +118,22 @@ class Tower(Figure):
         raise NotImplementedError
 
 
+class Knight(Figure):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    # evaluates if a move is possible and then calls the super function to do the move
+    def move(self, x, y, chessboard):
+        if (x, y) in chessboard:
+            if chessboard[(x, y)].getColor() == self._color:
+                raise NotImplementedError
+        if (abs(self._x - x) == 2 and abs(self._y - y) == 1 ) or  (abs(self._y - y) == 2 and abs(self._x - x) == 1 ):
+            super().move(x, y, chessboard)
+            return
+        raise NotImplementedError
+
+
 chessboard = {}
 chessboard[(2, 6)] = Farmer(2, 6, "black")
-chessboard[(2, 7)] = Tower(2, 7, "white")
-chessboard[(2, 7)].move(2, 5, chessboard)
+chessboard[(2, 7)] = Knight(2, 7, "white")
+chessboard[(2, 7)].move(3, 5, chessboard)
