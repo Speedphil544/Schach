@@ -32,6 +32,9 @@ class Figure(ABC):
         # alte != neue Position
         Figure.chessboard[(x, y)] = self
 
+    def wasMoved(self, newx, newy):
+        return (self._x != newx) or (self._y != newy)
+
     def getCoordinates(self):
         return (self._x, self._y)
 
