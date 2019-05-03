@@ -98,10 +98,10 @@ class Farmer(Figure):
             raise NotImplementedError
 
     def __repr__(self):
-        return "farmer, " + Figure.__repr__(self)
+        return "Farmer, " + Figure.__repr__(self)
 
 
-class Tower(Figure):
+class Rock(Figure):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
 
@@ -120,7 +120,10 @@ class Tower(Figure):
                                range(self._y + np.sign(y - self._y), y, np.sign(y - self._y)))):
                 Figure.move(self, x, y)
                 return
-        raise NotImplementedError
+        raise MoveError("Rock")
+
+    def __repr__(self):
+        return "Rock, " + Figure.__repr__(self)
 
 
 class Knight(Figure):
@@ -135,7 +138,10 @@ class Knight(Figure):
         if (abs(self._x - x) == 2 and abs(self._y - y) == 1) or (abs(self._y - y) == 2 and abs(self._x - x) == 1):
             Figure.move(self, x, y)
             return
-        raise NotImplementedError
+        raise MoveError("Knight")
+
+    def __repr__(self):
+        return "Knight, " + Figure.__repr__(self)
 
 
 class Bishop(Figure):
@@ -153,10 +159,13 @@ class Bishop(Figure):
                                    range(self._y + np.sign(y - self._y), y, np.sign(y - self._y))))):
                 Figure.move(self, x, y)
                 return
-        raise NotImplementedError
+        raise MoveError("Bishop")
+
+    def __repr__(self):
+        return "Bishop, " + Figure.__repr__(self)
 
 
-class Queen(Bishop, Tower):
+class Queen(Bishop, Rock):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
 
@@ -165,14 +174,19 @@ class Queen(Bishop, Tower):
             Bishop.move(self, x, y)
             return
         except:
-            NotImplementedError
+            MoveError
         try:
-            Tower.move(self, x, y)
+            Rock.move(self, x, y)
             return
         except:
-            NotImplementedError
-        raise NotImplementedError
+            MoveError
 
+        raise MoveError("Queen")
 
-horse = Knight(1, 1, "white")
-print(Figure.chessboard)
+    def __repr__(self):
+        return "Queen, " + Figure.__repr__(self)
+
+class MoveError(Exception):
+    def __init__(self, message):
+        # Call the base class constructor with the parameters it needs
+        super().__init__("This move is not possible for " + message)
