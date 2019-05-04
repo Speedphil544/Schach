@@ -18,12 +18,13 @@ def getAllFiguresOfOneColor(color):
 
 def isChecked(x, y, enemyFigures):
     for figure in enemyFigures:
-       
         try:
             figure.movePossible(x, y)
+            print(x,y)
             return True
         except:
             MoveError
+        return False
 
 
 # represents a figure on the board
@@ -45,9 +46,14 @@ class Figure(ABC):
     def move(self, x, y):
         if (x, y) in Figure.chessboard:
             if Figure.chessboard[(x, y)].getColor() == self._color:
+                print(Figure.chessboard[(x, y)])
                 raise MoveError("Cant take own figure")
         self.movePossible(x, y)
-        oldFigure = Figure.chessboard.pop(self._x, self._y)
+        a = False
+        if (x, y) in Figure.chessboard:
+            oldFigure = Figure.chessboard((x, y))
+            a = True
+        Figure.chessboard.pop((self._x, self._y))
         oldx = self._x
         oldy = self._y
         self._x = x
@@ -59,7 +65,8 @@ class Figure(ABC):
         king = findKing(self._color)
         enemyFigures = getAllFiguresOfOneColor(self._color)
         if isChecked(king.getCoordinates()[0], king.getCoordinates()[1], enemyFigures):
-            Figure.chessboard[(x, y)] = oldFigure
+            if a:
+                Figure.chessboard[(x, y)] = oldFigure
             Figure.chessboard[(oldx, oldy)] = self
             raise MoveError("King in Danger")
 
@@ -100,8 +107,8 @@ class Farmer(Figure):
     def movePossible(self, x, y):
         if self._color == "white":
             # move two steps from the starting position
-            if self._x == x and self._y == 7 and y == 5 and not (x, 6) in Figure.Figure.chessboard and not (x,
-                                                                                                            5) in Figure.Figure.chessboard:
+            if self._x == x and self._y == 7 and y == 5 and not (x, 6) in Figure.chessboard and not (x,
+                                                                                                     5) in Figure.chessboard:
                 return
             # move to last field and change figure
             if self._x == x and self._y == 1 and not (x, 1) in Figure.chessboard:
@@ -128,7 +135,7 @@ class Farmer(Figure):
             if abs(self._x - x) == 1 and self._y - y == -1 and (x, y) in Figure.chessboard:
                 if Figure.chessboard[(x, y)].getColor() != self._color:
                     return
-            raise MoveError
+        raise MoveError("lala")
 
     def __repr__(self):
         return "Farmer, " + Figure.__repr__(self)
