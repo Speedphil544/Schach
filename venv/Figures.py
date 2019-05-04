@@ -23,6 +23,9 @@ class Figure(ABC):
 
     # this method is called by the overwritten method in the inheriting class
     def move(self, x, y):
+        if (x, y) in Figure.chessboard:
+            if Figure.chessboard[(x, y)].getColor() == self._color:
+                raise MoveError("")
         Figure.chessboard.pop(self._x, self._y)
         self._x = x
         self._y = y
@@ -61,8 +64,7 @@ class Farmer(Figure):
     def move(self, x, y):
         if self._color == "white":
             # move two steps from the starting position
-            if self._x == x and self._y == 7 and y == 5 and not (x, 6) in Figure.Figure.chessboard and not (x,
-                                                                                                            5) in Figure.Figure.chessboard:
+            if self._x == x and self._y == 7 and y == 5 and not (x, 6) in Figure.Figure.chessboard and not (x,                                                                                           5) in Figure.Figure.chessboard:
                 Figure.move(self, x, y)
                 return
             # move to last field and change figure
@@ -107,9 +109,6 @@ class Rock(Figure):
 
     # evaluates if a move is possible and then calls the super function to do the move
     def move(self, x, y):
-        if (x, y) in Figure.chessboard:
-            if Figure.chessboard[(x, y)].getColor() == self._color:
-                raise NotImplementedError
         if self._y == y:
             if not list(filter(lambda xIt: (xIt, y) in Figure.chessboard,
                                range(self._x + np.sign(x - self._x), x, np.sign(x - self._x)))):
@@ -130,14 +129,11 @@ class Knight(Figure):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
 
-    # evaluates if a move is possible and then calls the super function to do the move
+# evaluates if a move is possible and then calls the super function to do the move
     def move(self, x, y):
-        if (x, y) in Figure.chessboard:
-            if Figure.chessboard[(x, y)].getColor() == self._color:
-                raise NotImplementedError
         if (abs(self._x - x) == 2 and abs(self._y - y) == 1) or (abs(self._y - y) == 2 and abs(self._x - x) == 1):
             Figure.move(self, x, y)
-            return
+        return
         raise MoveError("Knight")
 
     def __repr__(self):
@@ -150,9 +146,6 @@ class Bishop(Figure):
 
     # evaluates if a move is possible and then calls the super function to do the move
     def move(self, x, y):
-        if (x, y) in Figure.chessboard:
-            if Figure.chessboard[(x, y)].getColor() == self._color:
-                raise NotImplementedError
         if abs(self._x - x) == abs(self._y - y):
             if not list(filter(lambda it: it in Figure.chessboard,
                                zip(range(self._x + np.sign(x - self._x), x, np.sign(x - self._x)),
@@ -185,6 +178,7 @@ class Queen(Bishop, Rock):
 
     def __repr__(self):
         return "Queen, " + Figure.__repr__(self)
+
 
 class MoveError(Exception):
     def __init__(self, message):
