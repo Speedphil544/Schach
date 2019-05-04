@@ -8,7 +8,27 @@ In this module, we have all the figures
 '''
 
 
+def findKing(color):
+    return list(filter(lambda it: it.getColor() == color and it.getName() == "King", Figure.chessboard.values()))[0]
+
+
+def getAllFiguresOfOneColor(color):
+    return list(filter(lambda it: it.getColor() != color, Figure.chessboard.values()))
+
+
+def isChecked(x, y, enemyFigures):
+    for figure in enemyFigures:
+       
+        try:
+            figure.movePossible(x, y)
+            return True
+        except:
+            MoveError
+
+
 # represents a figure on the board
+
+
 class Figure(ABC):
     chessboard = {}
 
@@ -25,18 +45,32 @@ class Figure(ABC):
     def move(self, x, y):
         if (x, y) in Figure.chessboard:
             if Figure.chessboard[(x, y)].getColor() == self._color:
-                raise MoveError("")
-        Figure.chessboard.pop(self._x, self._y)
+                raise MoveError("Cant take own figure")
+        self.movePossible(x, y)
+        oldFigure = Figure.chessboard.pop(self._x, self._y)
+        oldx = self._x
+        oldy = self._y
         self._x = x
         self._y = y
         # alte != neue Position
         Figure.chessboard[(x, y)] = self
+
+        # check?
+        king = findKing(self._color)
+        enemyFigures = getAllFiguresOfOneColor(self._color)
+        if isChecked(king.getCoordinates()[0], king.getCoordinates()[1], enemyFigures):
+            Figure.chessboard[(x, y)] = oldFigure
+            Figure.chessboard[(oldx, oldy)] = self
+            raise MoveError("King in Danger")
 
     def getCoordinates(self):
         return (self._x, self._y)
 
     def getColor(self):
         return self._color
+
+    def getName(self):
+        return self._name
 
     def __repr__(self):
         return str((self._x, self._y)) + ", " + self._color
@@ -45,12 +79,13 @@ class Figure(ABC):
 class King(Figure):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
+        self._name = "King"
 
     # can do the following moves
-    def move(self, x, y):
+    def movePossible(self, x, y):
         # king can't move more than one step in x or y direction
         if abs(self._x - x) <= 1 and abs(self._y - y) <= 1:  # both differences 1 -> diagonal step
-            Figure.move(self, x, y)
+            return
 
     def __repr__(self):
         return "king, " + Figure.__repr__(self)
@@ -59,45 +94,41 @@ class King(Figure):
 class Farmer(Figure):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
+        self._name = "Farmer"
 
     # evaluates if a move is possible and then calls the super function to do the move
-    def move(self, x, y):
+    def movePossible(self, x, y):
         if self._color == "white":
             # move two steps from the starting position
-            if self._x == x and self._y == 7 and y == 5 and not (x, 6) in Figure.Figure.chessboard and not (x,                                                                                           5) in Figure.Figure.chessboard:
-                Figure.move(self, x, y)
+            if self._x == x and self._y == 7 and y == 5 and not (x, 6) in Figure.Figure.chessboard and not (x,
+                                                                                                            5) in Figure.Figure.chessboard:
                 return
             # move to last field and change figure
             if self._x == x and self._y == 1 and not (x, 1) in Figure.chessboard:
                 raise NotImplementedError
             # move one step forward
             if self._x == x and self._y - y == 1 and not (x, y) in Figure.chessboard:
-                Figure.move(self, x, y)
                 return
             # take enemy figure
             if abs(self._x - x) == 1 and self._y - y == 1 and (x, y) in Figure.chessboard:
                 if Figure.chessboard[(x, y)].getColor() != self._color:
-                    Figure.move(self, x, y)
                     return
         if self._color == "black":
             # move two steps from the starting position
             if self._x == x and self._y == 2 and y == 4 and not (x, 4) in Figure.chessboard and not (x,
                                                                                                      3) in Figure.chessboard:
-                Figure.move(self, x, y)
                 return
             # move to last field and change figure
             if self._x == x and self._y == 8 and not (x, 8) in Figure.chessboard:
                 raise NotImplementedError
             # move one step forward
             if self._x == x and y - self._y == 1 and not (x, y) in Figure.chessboard:
-                Figure.move(self, x, y)
                 return
             # take enemy figure
             if abs(self._x - x) == 1 and self._y - y == -1 and (x, y) in Figure.chessboard:
                 if Figure.chessboard[(x, y)].getColor() != self._color:
-                    Figure.move(self, x, y)
                     return
-            raise NotImplementedError
+            raise MoveError
 
     def __repr__(self):
         return "Farmer, " + Figure.__repr__(self)
@@ -106,18 +137,17 @@ class Farmer(Figure):
 class Rock(Figure):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
+        self._name = "Rock"
 
     # evaluates if a move is possible and then calls the super function to do the move
-    def move(self, x, y):
+    def movePossible(self, x, y):
         if self._y == y:
             if not list(filter(lambda xIt: (xIt, y) in Figure.chessboard,
                                range(self._x + np.sign(x - self._x), x, np.sign(x - self._x)))):
-                Figure.move(self, x, y)
                 return
         if self._x == x:
             if not list(filter(lambda yIt: (x, yIt) in Figure.chessboard,
                                range(self._y + np.sign(y - self._y), y, np.sign(y - self._y)))):
-                Figure.move(self, x, y)
                 return
         raise MoveError("Rock")
 
@@ -128,29 +158,30 @@ class Rock(Figure):
 class Knight(Figure):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
+        self._name = "Knight"
 
-# evaluates if a move is possible and then calls the super function to do the move
-    def move(self, x, y):
+    # evaluates if a move is possible and then calls the super function to do the move
+    def movePossible(self, x, y):
         if (abs(self._x - x) == 2 and abs(self._y - y) == 1) or (abs(self._y - y) == 2 and abs(self._x - x) == 1):
-            Figure.move(self, x, y)
-        return
+            return
         raise MoveError("Knight")
 
-    def __repr__(self):
-        return "Knight, " + Figure.__repr__(self)
+
+def __repr__(self):
+    return "Knight, " + Figure.__repr__(self)
 
 
 class Bishop(Figure):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
+        self._name = "Bishop"
 
     # evaluates if a move is possible and then calls the super function to do the move
-    def move(self, x, y):
+    def movePossible(self, x, y):
         if abs(self._x - x) == abs(self._y - y):
             if not list(filter(lambda it: it in Figure.chessboard,
                                zip(range(self._x + np.sign(x - self._x), x, np.sign(x - self._x)),
                                    range(self._y + np.sign(y - self._y), y, np.sign(y - self._y))))):
-                Figure.move(self, x, y)
                 return
         raise MoveError("Bishop")
 
@@ -161,6 +192,7 @@ class Bishop(Figure):
 class Queen(Bishop, Rock):
     def __init__(self, x, y, color):
         Figure.__init__(self, x, y, color)
+        self._name = "Queen"
 
     def move(self, x, y):
         try:
