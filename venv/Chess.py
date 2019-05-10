@@ -1,51 +1,56 @@
+# imports
 import pygame
 from Figures import Figure
 from Player import Player
 import itertools
 import pygame as pg
-#ahah
-
-pg.init()
-pg.font.init() # you have to call this at the start,
-                   # if you want to use this module.
-myfont = pygame.font.SysFont('Comic Sans MS', 30)
-textsurface = myfont.render('Some Text', False, (0, 0, 0))
+from pygame_functions import *
 
 
-BROWN = pg.Color(130,70,30)
-WHITE = pg.Color('white')
 
-screen = pg.display.set_mode((800, 600))
-clock = pg.time.Clock()
+# sets up the screen
+screenSize(500,600)
+#setBackgroundImage("images/cut_wood.png")
+drawRect(0,0,500,50,"dark grey")
+titleLabel = makeLabel("Chess Champions", 30, 10, 10, "brown", "Cooper Black","dark grey")
+showLabel(titleLabel)
+drawRect(0,550,500,50,"dark grey")
+playerLabel = makeLabel("Spieler 1 (Weiß) ist dran!", 20, 10, 563, "white", "Cooper Black","dark grey")
+showLabel(playerLabel)
 
-colors = itertools.cycle((WHITE, BROWN))
-tile_size = 60
-width, height = 8*tile_size, 8*tile_size
-background = pg.Surface((width, height))
-
-for y in range(0, height, tile_size):
-    for x in range(0, width, tile_size):
-        rect = (x, y, tile_size, tile_size)
-        pg.draw.rect(background, next(colors), rect)
+# draws the chessboard
+colors = itertools.cycle(("grey","brown"))
+tile_size = 50
+for row in range(8):
+    for column in range(8):
+        drawRect(50+tile_size*column,100+tile_size*row,tile_size,tile_size,next(colors))
     next(colors)
+drawRect(50,100,8*tile_size,8*tile_size,"black",5)
 
-game_exit = False
-while not game_exit:
-    for event in pg.event.get():
-        if event.type == pg.QUIT:
-            game_exit = True
-
-    screen.fill((180, 130, 20))
-    screen.blit(background, (0, 100))
-    screen.blit(textsurface, (0, 0))
-    pg.display.flip()
-    clock.tick(30)
-
-pg.quit()
-
-
+# create objects
 cb = Figure.chessboard
 pWhite = Player("white")
 pBlack = Player("black")
 
+# sprite test
+class Box(pygame.sprite.Sprite):
+    def __init__(self, color, initial_position):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((20,20))
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = initial_position
+        self.speed = 300
+    def update(self, time_passed):
+        moved_distance = time_passed * self.speed
+        self.rect.left += moved_distance
 
+box = Box((255,0,0),(50,50))
+
+# pawn sprite
+pawnSprite = makeSprite("images/pawn-icon-50.png")
+moveSprite(pawnSprite,50,50)
+#showSprite(pawnSprite)
+
+# necessary at the end
+endWait()
