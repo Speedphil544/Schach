@@ -31,15 +31,18 @@ class Player:
 
     def move(self):
         while True:
-            inp = input("Your turn: ")
+            inp = input(self.color + "`s turn: ")
             oldx = int(inp[0])
             oldy = int(inp[1])
             newx = int(inp[2])
             newy = int(inp[3])
-            Figure.chessboard[(oldx, oldy)].move(newx, newy)
-
-        # Exception
-    # print("something went wrong, repeat")
+            if (oldx, oldy) in Figure.chessboard:
+                fig = Figure.chessboard[(oldx, oldy)]
+                if fig.getColor() == self.color:
+                    fig.move(newx, newy)
+                    print(Figure.chessboard)
+                    break
+            print("Wrong coordinates for the figure you want to move")
 
 
 player1 = Player("white")
@@ -48,5 +51,4 @@ players = [player1, player2]
 while True:
 
     for player in players:
-        print(player.color)
         player.move()
