@@ -5,6 +5,7 @@ class Player:
     def __init__(self, color):
         assert color == "white" or color == "black"
         self._figures = {}
+        self.color = color
         if color == "white":
             for x in range(1, 9):
                 self._figures[(x, 7)] = Farmer(x, 7, color)
@@ -29,11 +30,23 @@ class Player:
             self._figures[(5, 1)] = Bishop(5, 1, color)
 
     def move(self):
-        inp = input("Your turn: ")
-        oldx = int(inp[0])
-        oldy = int(inp[1])
-        newx = int(inp[2])
-        newy = int(inp[3])
-        self._figures[(oldx, oldy)].move(newx, newy)
+        while True:
+            inp = input("Your turn: ")
+            oldx = int(inp[0])
+            oldy = int(inp[1])
+            newx = int(inp[2])
+            newy = int(inp[3])
+            Figure.chessboard[(oldx, oldy)].move(newx, newy)
+
+        # Exception
+    # print("something went wrong, repeat")
 
 
+player1 = Player("white")
+player2 = Player("black")
+players = [player1, player2]
+while True:
+
+    for player in players:
+        print(player.color)
+        player.move()
